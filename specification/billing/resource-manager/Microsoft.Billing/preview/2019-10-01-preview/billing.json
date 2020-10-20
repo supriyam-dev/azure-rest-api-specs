@@ -503,6 +503,48 @@
         }
       }
     },
+    "/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/billingProfiles/{billingProfileName}/billingInstructions": {
+      "get": {
+        "tags": [
+          "BillingInstructions"
+        ],
+        "operationId": "BillingInstructions_GetByBillingProfile",
+        "description": "Lists the billing instructions for a billing profile.",
+        "externalDocs": {
+          "url": "https://docs.microsoft.com/en-us/rest/api/billing/"
+        },
+        "x-ms-examples": {
+          "BillingInstructionsByBillingProfile": {
+            "$ref": "./examples/BillingInstructionsByBillingProfile.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/billingAccountNameParameter"
+          },
+          {
+            "$ref": "#/parameters/billingProfileNameParameter"
+          },
+          {
+            "$ref": "#/parameters/apiVersionParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. The request has succeeded.",
+            "schema": {
+              "$ref": "#/definitions/BillingInstructions"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
     "/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/billingProfiles/{billingProfileName}/validateDetachPaymentMethodEligibility": {
       "get": {
         "tags": [
@@ -7700,6 +7742,105 @@
         },
         "message": {
           "description": "The validation message.",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "BillingInstructions": {
+      "type": "object",
+      "description": "",
+      "discriminator": "instructionType",
+      "allOf": [
+        {
+          "$ref": "#/definitions/Resource"
+        }
+      ],
+      "properties": {
+        "instructionType": {
+          "type": "string",
+          "description": "Specifies the type of billing instruction.",
+          "enum": [
+            "singlePaymentInstrument",
+            "omsBillingInstruction"
+          ],
+          "x-ms-enum": {
+            "name": "InstructionType",
+            "modelAsString": true
+          }
+        },
+        "state": {
+          "description": "The state of billing profile.",
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "instructionType"
+      ]
+    },
+    "SinglePaymentInstrumentBillingInstruction": {
+      "description": "Legacy charge summary.",
+      "type": "object",
+      "x-ms-discriminator-value": "singlePaymentInstrument",
+      "properties": {
+        "properties": {
+          "description": "Properties for legacy charge summary",
+          "$ref": "#/definitions/SinglePaymentInstrumentBillingInstructionProperties",
+          "x-ms-client-flatten": true
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/BillingInstruction"
+        }
+      ],
+      "required": [
+        "properties"
+      ]
+    },
+    "SinglePaymentInstrumentBillingInstructionProperties": {
+      "description": "The properties of legacy charge summary.",
+      "type": "object",
+      "properties": {
+        "PaymentInstrument": {
+          "description": "The id of the billing period resource that the charge belongs to.",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "OmsBillingInstruction": {
+      "description": "Legacy charge summary.",
+      "type": "object",
+      "x-ms-discriminator-value": "omsBillingInstruction",
+      "properties": {
+        "properties": {
+          "description": "Properties for legacy charge summary",
+          "$ref": "#/definitions/OmsBillingInstructionProperties",
+          "x-ms-client-flatten": true
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/BillingInstruction"
+        }
+      ],
+      "required": [
+        "properties"
+      ]
+    },
+    "OmsBillingInstructionProperties": {
+      "description": "The properties of legacy charge summary.",
+      "type": "object",
+      "properties": {
+        "Caid": {
+          "description": "The id of the billing period resource that the charge belongs to.",
+          "type": "string",
+          "readOnly": true
+        },
+        "OmsOrderId": {
+          "description": "The id of the billing period resource that the charge belongs to.",
           "type": "string",
           "readOnly": true
         }
