@@ -9,7 +9,7 @@
       "body": {
         "id": "10000000-aaaa-bbbb-cccc-100000000000_6fd330f6-7d26-4aff-b9cf-7bd699f965b9",
         "name": "10000000-aaaa-bbbb-cccc-100000000000_6fd330f6-7d26-4aff-b9cf-7bd699f965b9",
-        "kind": "singlePaymentInstrument",
+        "instructionType": "singlePaymentInstrument",
         "properties": {
           "paymentInstrument": "piid1"
         }

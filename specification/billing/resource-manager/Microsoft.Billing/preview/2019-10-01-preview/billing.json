@@ -7923,7 +7923,6 @@
         }
       ],
       "required": [
-        "properties"
       ]
     },
     "Participants": {
