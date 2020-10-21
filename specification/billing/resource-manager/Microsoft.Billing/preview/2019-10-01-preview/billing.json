@@ -7768,11 +7768,6 @@
             "name": "InstructionType",
             "modelAsString": true
           }
-        },
-        "state": {
-          "description": "The state of billing profile.",
-          "type": "string",
-          "readOnly": true
         }
       },
       "required": [
@@ -7840,7 +7835,7 @@
           "readOnly": true
         },
         "omsOrderId": {
-          "description": "The oms order id.",
+          "description": "The oms order id of the billing period resource that the charge belongs to.",
           "type": "string",
           "readOnly": true
         }
