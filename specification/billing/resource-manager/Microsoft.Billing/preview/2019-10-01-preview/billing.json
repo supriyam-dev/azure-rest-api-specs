@@ -7762,7 +7762,10 @@
           "description": "Specifies the type of billing instruction.",
           "enum": [
             "singlePaymentInstrument",
-            "omsBillingInstruction"
+            "balanceDrain",
+            "sandboxBillingInstruction",
+            "omsBillingInstruction",
+            "noPaymentInstrument"
           ],
           "x-ms-enum": {
             "name": "InstructionType",
@@ -7805,6 +7808,42 @@
         }
       }
     },
+    "BalanceDrainBillingInstruction": {
+      "description": "Balance drain payment instrument billing instruction.",
+      "type": "object",
+      "x-ms-discriminator-value": "balanceDrain",
+      "properties": {
+        "properties": {
+          "description": "Properties for single payment instrument billing instruction.",
+          "$ref": "#/definitions/BalanceDrainBillingInstructionProperties",
+          "x-ms-client-flatten": true
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/BillingInstructions"
+        }
+      ],
+      "required": [
+        "properties"
+      ]
+    },
+    "BalanceDrainBillingInstructionProperties": {
+      "description": "The properties of balance drain billing instruction.",
+      "type": "object",
+      "properties": {
+        "balancePaymentInstrument": {
+          "description": "The balance payment instrument.",
+          "type": "string",
+          "readOnly": true
+        },
+        "backupPaymentInstrument": {
+          "description": "The backup payment instrument.",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
     "OmsBillingInstruction": {
       "description": "Oms billing instructions.",
       "type": "object",
@@ -7840,6 +7879,52 @@
           "readOnly": true
         }
       }
+    },
+    "SandboxBillingInstruction": {
+      "description": "Oms billing instructions.",
+      "type": "object",
+      "x-ms-discriminator-value": "sandboxBillingInstruction",
+      "properties": {
+        "properties": {
+          "description": "Properties for sandbox billing instructions.",
+          "$ref": "#/definitions/SandboxBillingInstructionoperties",
+          "x-ms-client-flatten": true
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/BillingInstructions"
+        }
+      ],
+      "required": [
+        "properties"
+      ]
+    },
+    "SandboxBillingInstructionProperties": {
+      "description": "The properties of sandbox billing instructions.",
+      "type": "object",
+      "properties": {
+        "cid": {
+          "description": "The identifier of the jarvis customer id.",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "NoPaymentInstrument": {
+      "description": "No billing instructions.",
+      "type": "object",
+      "x-ms-discriminator-value": "noPaymentInstrument",
+      "properties": {
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/BillingInstructions"
+        }
+      ],
+      "required": [
+        "properties"
+      ]
     },
     "Participants": {
       "description": "The details about a participant.",
