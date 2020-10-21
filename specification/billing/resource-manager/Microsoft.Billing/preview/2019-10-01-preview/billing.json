@@ -508,8 +508,8 @@
         "tags": [
           "BillingInstructions"
         ],
-        "operationId": "BillingInstructions_GetByBillingProfile",
-        "description": "Lists the billing instructions for a billing profile.",
+        "operationId": "BillingProfileBillingInstructions_Get",
+        "description": "Get the billing instructions for a billing profile.",
         "externalDocs": {
           "url": "https://docs.microsoft.com/en-us/rest/api/billing/"
         },
@@ -7749,7 +7749,7 @@
     },
     "BillingInstructions": {
       "type": "object",
-      "description": "",
+      "description": "The billing instructions.",
       "discriminator": "instructionType",
       "allOf": [
         {
@@ -7780,19 +7780,19 @@
       ]
     },
     "SinglePaymentInstrumentBillingInstruction": {
-      "description": "Legacy charge summary.",
+      "description": "Single payment instrument billing instruction.",
       "type": "object",
       "x-ms-discriminator-value": "singlePaymentInstrument",
       "properties": {
         "properties": {
-          "description": "Properties for legacy charge summary",
+          "description": "Properties for single payment instrument billing instruction.",
           "$ref": "#/definitions/SinglePaymentInstrumentBillingInstructionProperties",
           "x-ms-client-flatten": true
         }
       },
       "allOf": [
         {
-          "$ref": "#/definitions/BillingInstruction"
+          "$ref": "#/definitions/BillingInstructions"
         }
       ],
       "required": [
@@ -7800,30 +7800,30 @@
       ]
     },
     "SinglePaymentInstrumentBillingInstructionProperties": {
-      "description": "The properties of legacy charge summary.",
+      "description": "The properties of single payment instrument billing instruction.",
       "type": "object",
       "properties": {
-        "PaymentInstrument": {
-          "description": "The id of the billing period resource that the charge belongs to.",
+        "paymentInstrument": {
+          "description": "The payment instrument.",
           "type": "string",
           "readOnly": true
         }
       }
     },
     "OmsBillingInstruction": {
-      "description": "Legacy charge summary.",
+      "description": "Oms billing instructions.",
       "type": "object",
       "x-ms-discriminator-value": "omsBillingInstruction",
       "properties": {
         "properties": {
-          "description": "Properties for legacy charge summary",
+          "description": "Properties for oms billing instructions.",
           "$ref": "#/definitions/OmsBillingInstructionProperties",
           "x-ms-client-flatten": true
         }
       },
       "allOf": [
         {
-          "$ref": "#/definitions/BillingInstruction"
+          "$ref": "#/definitions/BillingInstructions"
         }
       ],
       "required": [
@@ -7831,16 +7831,16 @@
       ]
     },
     "OmsBillingInstructionProperties": {
-      "description": "The properties of legacy charge summary.",
+      "description": "The properties of oms billing instructions.",
       "type": "object",
       "properties": {
-        "Caid": {
-          "description": "The id of the billing period resource that the charge belongs to.",
+        "caid": {
+          "description": "The commerce account id.",
           "type": "string",
           "readOnly": true
         },
-        "OmsOrderId": {
-          "description": "The id of the billing period resource that the charge belongs to.",
+        "omsOrderId": {
+          "description": "The oms order id.",
           "type": "string",
           "readOnly": true
         }
