@@ -7887,7 +7887,7 @@
       "properties": {
         "properties": {
           "description": "Properties for sandbox billing instructions.",
-          "$ref": "#/definitions/SandboxBillingInstructionoperties",
+          "$ref": "#/definitions/SandboxBillingInstructionProperties",
           "x-ms-client-flatten": true
         }
       },
