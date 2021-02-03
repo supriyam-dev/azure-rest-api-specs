@@ -503,6 +503,90 @@
         }
       }
     },
+    "/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/billingProfiles/{billingProfileName}/billingInstructions": {
+      "get": {
+        "tags": [
+          "BillingInstructions"
+        ],
+        "operationId": "BillingProfileBillingInstructions_Get",
+        "description": "Get the billing instructions for a billing profile.",
+        "externalDocs": {
+          "url": "https://docs.microsoft.com/en-us/rest/api/billing/"
+        },
+        "x-ms-examples": {
+          "BillingInstructionsByBillingProfile": {
+            "$ref": "./examples/BillingInstructionsByBillingProfile.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/billingAccountNameParameter"
+          },
+          {
+            "$ref": "#/parameters/billingProfileNameParameter"
+          },
+          {
+            "$ref": "#/parameters/apiVersionParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. The request has succeeded.",
+            "schema": {
+              "$ref": "#/definitions/BillingInstructions"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/billingProfiles/{billingProfileName}/validateDetachPaymentMethodEligibility": {
+      "get": {
+        "tags": [
+          "BillingProfiles"
+        ],
+        "x-ms-examples": {
+          "ValidateDetachPaymentMethodEligibilitySuccess": {
+            "$ref": "./examples/ValidateDetachPaymentMethodEligibilitySuccess.json"
+          },
+          "ValidateDetachPaymentMethodEligibilityFailure": {
+            "$ref": "./examples/ValidateDetachPaymentMethodEligibilityFailure.json"
+          }
+        },
+        "operationId": "BillingProfiles_GetEligibilityToDetachPaymentMethod",
+        "description": "Validates if the default payment method can be detached from the billing profile. The operation is supported for billing accounts with agreement type Microsoft Customer Agreement.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/billingAccountNameParameter"
+          },
+          {
+            "$ref": "#/parameters/billingProfileNameParameter"
+          },
+          {
+            "$ref": "#/parameters/apiVersionParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. The request has succeeded.",
+            "schema": {
+              "$ref": "#/definitions/DetachPaymentMethodEligibilityResult"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
     "/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/billingProfiles": {
       "get": {
         "tags": [
@@ -5170,6 +5254,54 @@
         }
       }
     },
+    "DetachPaymentMethodEligibilityResult": {
+      "type": "object",
+      "description": "Result of the detach payment method eligibility validation.",
+      "properties": {
+        "isEligible": {
+          "description": "Specifies whether the payment method is eligible to be detached from the billing profile.",
+          "type": "boolean",
+          "readOnly": true
+        },
+        "errorDetails": {
+          "description": "The list of detach payment method eligibility errors.",
+          "type": "array",
+          "readOnly": true,
+          "items": {
+            "$ref": "#/definitions/DetachPaymentMethodErrorDetails"
+          }
+        }
+      }
+    },
+    "DetachPaymentMethodErrorDetails": {
+      "type": "object",
+      "description": "Error details of the detach payment method eligibility validation.",
+      "properties": {
+        "code": {
+          "description": "Error code for the detach payment method eligibility validation.",
+          "$ref": "#/definitions/DetachPaymentMethodEligibilityErrorCode"
+        },
+        "message": {
+          "description": "Error message for the detach payment method eligibility validation.",
+          "type": "string"
+        }
+      }
+    },
+    "DetachPaymentMethodEligibilityErrorCode": {
+      "type": "string",
+      "description": "Error code of the detach payment method eligibility validation response.",
+      "enum": [
+        "AzureSubscriptions",
+        "RecurringCharges",
+        "ReservedInstances",
+        "OutstandingCharges",
+        "PendingCharges"
+      ],
+      "x-ms-enum": {
+        "name": "detachPaymentMethodEligibilityErrorCode",
+        "modelAsString": true
+      }
+    },
     "ValidateSubscriptionTransferEligibilityResult": {
       "type": "object",
       "description": "Result of the transfer eligibility validation.",
@@ -7614,6 +7746,184 @@
           "readOnly": true
         }
       }
+    },
+    "BillingInstructions": {
+      "type": "object",
+      "description": "The billing instructions.",
+      "discriminator": "instructionType",
+      "allOf": [
+        {
+          "$ref": "#/definitions/Resource"
+        }
+      ],
+      "properties": {
+        "instructionType": {
+          "type": "string",
+          "description": "Specifies the type of billing instruction.",
+          "enum": [
+            "singlePaymentInstrument",
+            "balanceDrain",
+            "sandboxBillingInstruction",
+            "omsBillingInstruction",
+            "noPaymentInstrument"
+          ],
+          "x-ms-enum": {
+            "name": "InstructionType",
+            "modelAsString": true
+          }
+        }
+      },
+      "required": [
+        "instructionType"
+      ]
+    },
+    "SinglePaymentInstrumentBillingInstruction": {
+      "description": "Single payment instrument billing instruction.",
+      "type": "object",
+      "x-ms-discriminator-value": "singlePaymentInstrument",
+      "properties": {
+        "properties": {
+          "description": "Properties for single payment instrument billing instruction.",
+          "$ref": "#/definitions/SinglePaymentInstrumentBillingInstructionProperties",
+          "x-ms-client-flatten": true
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/BillingInstructions"
+        }
+      ],
+      "required": [
+        "properties"
+      ]
+    },
+    "SinglePaymentInstrumentBillingInstructionProperties": {
+      "description": "The properties of single payment instrument billing instruction.",
+      "type": "object",
+      "properties": {
+        "paymentInstrument": {
+          "description": "The payment instrument.",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "BalanceDrainBillingInstruction": {
+      "description": "Balance drain payment instrument billing instruction.",
+      "type": "object",
+      "x-ms-discriminator-value": "balanceDrain",
+      "properties": {
+        "properties": {
+          "description": "Properties for single payment instrument billing instruction.",
+          "$ref": "#/definitions/BalanceDrainBillingInstructionProperties",
+          "x-ms-client-flatten": true
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/BillingInstructions"
+        }
+      ],
+      "required": [
+        "properties"
+      ]
+    },
+    "BalanceDrainBillingInstructionProperties": {
+      "description": "The properties of balance drain billing instruction.",
+      "type": "object",
+      "properties": {
+        "balancePaymentInstrument": {
+          "description": "The balance payment instrument.",
+          "type": "string",
+          "readOnly": true
+        },
+        "backupPaymentInstrument": {
+          "description": "The backup payment instrument.",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "OmsBillingInstruction": {
+      "description": "Oms billing instructions.",
+      "type": "object",
+      "x-ms-discriminator-value": "omsBillingInstruction",
+      "properties": {
+        "properties": {
+          "description": "Properties for oms billing instructions.",
+          "$ref": "#/definitions/OmsBillingInstructionProperties",
+          "x-ms-client-flatten": true
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/BillingInstructions"
+        }
+      ],
+      "required": [
+        "properties"
+      ]
+    },
+    "OmsBillingInstructionProperties": {
+      "description": "The properties of oms billing instructions.",
+      "type": "object",
+      "properties": {
+        "caid": {
+          "description": "The commerce account id.",
+          "type": "string",
+          "readOnly": true
+        },
+        "omsOrderId": {
+          "description": "The oms order id of the billing period resource that the charge belongs to.",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "SandboxBillingInstruction": {
+      "description": "Oms billing instructions.",
+      "type": "object",
+      "x-ms-discriminator-value": "sandboxBillingInstruction",
+      "properties": {
+        "properties": {
+          "description": "Properties for sandbox billing instructions.",
+          "$ref": "#/definitions/SandboxBillingInstructionProperties",
+          "x-ms-client-flatten": true
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/BillingInstructions"
+        }
+      ],
+      "required": [
+        "properties"
+      ]
+    },
+    "SandboxBillingInstructionProperties": {
+      "description": "The properties of sandbox billing instructions.",
+      "type": "object",
+      "properties": {
+        "cid": {
+          "description": "The identifier of the jarvis customer id.",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "NoPaymentInstrument": {
+      "description": "No billing instructions.",
+      "type": "object",
+      "x-ms-discriminator-value": "noPaymentInstrument",
+      "properties": {
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/BillingInstructions"
+        }
+      ],
+      "required": [
+      ]
     },
     "Participants": {
       "description": "The details about a participant.",
